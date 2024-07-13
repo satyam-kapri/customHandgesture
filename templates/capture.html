@@ -1,0 +1,72 @@
+<!-- templates/form.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Gesture</title>
+</head>
+
+<body>
+    <h1>Capture Gesture</h1>
+        <form onsubmit="startTraining(event)" >
+        <label for="label">Enter Label:</label><br>
+        <input type="text" id="label" name="label" required><br><br>
+        <input type="submit" value="Start training" >
+        </form>
+
+        <img style="display:none" width="50%" id="videoStream"/>
+        
+        <button onclick="stopTraining()">stop training</button>
+        
+        <script>
+            function startTraining(event) {
+                event.preventDefault(); 
+                 console.log("hitting");
+                var label = document.getElementById('label').value;
+                fetch("http://127.0.0.1:5000/setlabel", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "label=" + encodeURIComponent(label)
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Label submitted successfully');
+                        startVideoStream();
+                    }
+                });
+               
+            }
+            function stopTraining(){
+                let label="quit1234";
+                fetch("http://127.0.0.1:5000/setlabel", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "label=" + encodeURIComponent(label)
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Label submitted successfully');
+                        startVideoStream();
+                    }
+                });
+            }
+            function startVideoStream() {
+                var imgElement = document.getElementById('videoStream');
+                imgElement.style.display='block';
+                imgElement.src = "{{ url_for('capturegesture') }}";
+            }
+            function stopVideoStream() {
+                var imgElement = document.getElementById('videoStream');
+                imgElement.style.display='none';
+                imgElement.src = Null;
+            }
+
+        </script>
+</body>
+
+</html>

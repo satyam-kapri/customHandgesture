@@ -1,0 +1,28 @@
+
+<html>
+
+
+  <body>
+    <h1>Live streaming</h1>
+    <div>
+
+        <img src="{{ url_for('detectgesture') }}" width="50%" id="detectgesture" style="display:none"/>
+        <button id='detect' onclick="toggleStream()">detect</button>
+
+    </div>
+   
+    <script>
+        function toggleStream() {
+            console.log("hi");
+          var img = document.getElementById('detectgesture');
+          if (img.style.display === 'none') {
+            img.style.display = 'block';
+          } else {
+            img.style.display = 'none';
+          }
+        }
+      </script>
+    </body>
+  
+
+</html>
