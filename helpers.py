@@ -14,7 +14,7 @@ X = []
 y = []
 label_encoder = LabelEncoder()
 global label
-cap = cv2.VideoCapture(0)
+
 
 def set_label(lab):
     global label
@@ -36,7 +36,7 @@ def extract_features(landmarks):
 
 
 def generate_frames():
-   
+    cap = cv2.VideoCapture(0)
     with open('gesture_model.pkl', 'rb') as model_file:
         clf = pickle.load(model_file)
     with open('label_encoder.pkl', 'rb') as le_file:
@@ -71,7 +71,9 @@ def generate_frames():
 
 # Function to capture training data
 def capture_training_data():
+    cap = cv2.VideoCapture(0)
     global X, y,label
+    sample_count=0
     while True:
             gesture_label = label
             if gesture_label =="quit1234":
@@ -81,6 +83,10 @@ def capture_training_data():
             if not ret:
                 break
 
+            if(sample_count==200):
+               save_sample(frame, gesture_label)
+            sample_count+=1
+            
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             result = hands.process(rgb_frame)
 
@@ -97,6 +103,19 @@ def capture_training_data():
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
+def save_sample(frame, label):
+    sample_dir = 'samples'
+    if not os.path.exists(sample_dir):
+        os.makedirs(sample_dir)
+
+    label_dir = os.path.join(sample_dir, label)
+    if not os.path.exists(label_dir):
+        os.makedirs(label_dir)
+
+    # Save image with label as filename
+    filename = f'{label}_{len(os.listdir(label_dir)) + 1}.jpg'  # Unique filename
+    filepath = os.path.join(label_dir, filename)
+    cv2.imwrite(filepath, frame)
 
 
 # Function to train the model

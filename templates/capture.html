@@ -6,26 +6,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/capture.css">
     <title>Capture Gesture</title>
 </head>
 
 <body>
-    <h1>Capture Gesture</h1>
-        <form onsubmit="startTraining(event)" >
-        <label for="label">Enter Label:</label><br>
-        <input type="text" id="label" name="label" required><br><br>
-        <input type="submit" value="Start training" >
-        </form>
 
-        <img style="display:none" width="50%" id="videoStream"/>
-        
-        <button onclick="stopTraining()">stop training</button>
-        
+    <div id="container">
+        <div id="sidebar">
+            <div class="logo"></div>
+            <div class="icons">
+              <span onclick="window.location.href='/'" class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m8.5 12.5l2 2l5-5"/><path d="M22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12s0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464c.974.974 1.3 2.343 1.41 4.536"/></g></svg>&nbsp;test</span>
+              <span onclick="window.location.href='/capture'" class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 16 16"><path fill="currentColor" d="M10.386 9.836a2.5 2.5 0 1 1 3.611.667C15.212 11.173 16 12.46 16 14v1.5a.5.5 0 1 1-1 0V14c0-1.724-1.276-3-3-3c-.91 0-1.298-.02-1.805-.122c-1.25-.254-2.333-1-3.585-2.566a.5.5 0 1 1 .78-.624c.9 1.124 1.653 1.74 2.434 2.043c.155.052.345.083.562.105m1.785.128q.125.015.251.034L12.5 10a1.5 1.5 0 1 0-.33-.036M9.78 11.97a.5.5 0 0 1 .5.5a1 1 0 0 1-.05.231c-.179.38-.23.774-.23 1.302v1.5a.5.5 0 1 1-1 0v-1.5c0-.657.072-1.186.307-1.696a.5.5 0 0 1 .473-.337M5.958 5.772a.5.5 0 0 1-.78.625L3.11 3.812a.5.5 0 1 1 .78-.624zM1 11h5.5a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5V.5A.5.5 0 0 1 .5 0h12a.5.5 0 0 1 .5.5v3a.5.5 0 1 1-1 0V1H1z"/></svg>&nbsp;train</span>
+            </div>
+    </div>
+        <div id="main">
+            <div>
+                <h1>Capture Gesture</h1>
+                    <form id="labelform">
+                    <label for="label">Enter Label:</label><br>
+                    <textarea col="30" row="30" id="label" name="label" required style="height: 383px; width: 455px;"></textarea>
+                    <br><br>
+                    <input type="button" value="Start training"  class="button-33" onclick="startTraining()">
+                    </form>
+                <button onclick="stopTraining()" id="stopTraining" class="button-33">stop training</button>
+            </div>
+                <div id="videoouter">
+                <img style="display:none" width="100%" id="videoStream"/>
+                </div>
+            </div>
+        </div>
         <script>
-            function startTraining(event) {
-                event.preventDefault(); 
-                 console.log("hitting");
+            
+            function startTraining() {
+            
                 var label = document.getElementById('label').value;
+                console.log(label);
                 fetch("http://127.0.0.1:5000/setlabel", {
                     method: "POST",
                     headers: {
@@ -38,7 +54,7 @@
                         startVideoStream();
                     }
                 });
-               
+              
             }
             function stopTraining(){
                 let label="quit1234";
@@ -50,7 +66,7 @@
                     body: "label=" + encodeURIComponent(label)
                 }).then(response => {
                     if (response.ok) {
-                        alert('Label submitted successfully');
+                        alert('Model trained successfully');
                         startVideoStream();
                     }
                 });
@@ -58,7 +74,7 @@
             function startVideoStream() {
                 var imgElement = document.getElementById('videoStream');
                 imgElement.style.display='block';
-                imgElement.src = "{{ url_for('capturegesture') }}";
+                imgElement.src = "{{ url_for('capturegesture') }}";a
             }
             function stopVideoStream() {
                 var imgElement = document.getElementById('videoStream');

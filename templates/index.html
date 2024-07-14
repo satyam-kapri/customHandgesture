@@ -1,26 +1,85 @@
 
 <html>
-
-
+   <head>
+    <link rel='stylesheet' href="static/index.css">
+   </head>
+  
   <body>
-    <h1>Live streaming</h1>
-    <div>
-
-        <img src="{{ url_for('detectgesture') }}" width="50%" id="detectgesture" style="display:none"/>
-        <button id='detect' onclick="toggleStream()">detect</button>
-
+    <div id="container">
+        <div id="sidebar">
+                <div class="logo"></div>
+                <div class="icons">
+                  <span onclick="window.location.href='/'" class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m8.5 12.5l2 2l5-5"/><path d="M22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12s0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464c.974.974 1.3 2.343 1.41 4.536"/></g></svg>&nbsp;test</span>
+                  <span onclick="window.location.href='/capture'" class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 16 16"><path fill="currentColor" d="M10.386 9.836a2.5 2.5 0 1 1 3.611.667C15.212 11.173 16 12.46 16 14v1.5a.5.5 0 1 1-1 0V14c0-1.724-1.276-3-3-3c-.91 0-1.298-.02-1.805-.122c-1.25-.254-2.333-1-3.585-2.566a.5.5 0 1 1 .78-.624c.9 1.124 1.653 1.74 2.434 2.043c.155.052.345.083.562.105m1.785.128q.125.015.251.034L12.5 10a1.5 1.5 0 1 0-.33-.036M9.78 11.97a.5.5 0 0 1 .5.5a1 1 0 0 1-.05.231c-.179.38-.23.774-.23 1.302v1.5a.5.5 0 1 1-1 0v-1.5c0-.657.072-1.186.307-1.696a.5.5 0 0 1 .473-.337M5.958 5.772a.5.5 0 0 1-.78.625L3.11 3.812a.5.5 0 1 1 .78-.624zM1 11h5.5a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5V.5A.5.5 0 0 1 .5 0h12a.5.5 0 0 1 .5.5v3a.5.5 0 1 1-1 0V1H1z"/></svg>&nbsp;train</span>
+                </div>
+        </div>
+        <div id="main">
+                
+                <div id="center">
+                  <div style="display:flex;align-items:center">
+                  <svg height="100" width="100" class="blinking">
+                    <circle cx="50" cy="50" r="10" fill="red" />
+                    Sorry, your browser does not support inline SVG.  
+                  </svg> 
+                  <h1>Live streaming</h1>
+                </div>
+                    <div id="video-outer"><img src="{{ url_for('detectgesture') }}" width="100%" id="detectgesture" /></div>
+                    <button id='detect' onclick="toggleStream()" class="button-33">detect</button>
+                    
+                </div>
+                
+                <div id="samplesContainer">
+                   <h3>All Gestures</h3>
+                  <button onclick="fetchSamples()" class="button-33">Fetch Samples</button>
+                </div>
+        </div>
+        
     </div>
-   
     <script>
         function toggleStream() {
             console.log("hi");
           var img = document.getElementById('detectgesture');
           if (img.style.display === 'none') {
             img.style.display = 'block';
+            img.src="{{ url_for('detectgesture') }}";
           } else {
             img.style.display = 'none';
+            img.src="";
           }
         }
+
+
+
+        function fetchSamples() {
+          fetch('/fetchsamples', {
+              method: 'POST',
+          })
+          .then(response => response.json())
+          .then(data => {
+              var samplesContainer = document.getElementById('samplesContainer');
+              samplesContainer.innerHTML = '';  // Clear previous samples
+
+              data.samples.forEach(sample => {
+                  var div = document.createElement('div');
+                  div.style.display = 'inline-block';
+                  div.style.margin = '10px';
+
+                  var h3 = document.createElement('h3');
+                  h3.textContent = sample.label;
+                  div.appendChild(h3);
+                  div.classList.add('card');
+                  var img = document.createElement('img');
+                  img.src = '/' + sample.image_path;  // Adjust the path as needed
+                  img.width = '300';
+                  div.appendChild(img);
+
+                  samplesContainer.appendChild(div);
+              });
+          })
+          .catch(error => {
+              console.error('Error fetching samples:', error);
+          });
+      }
       </script>
     </body>
   

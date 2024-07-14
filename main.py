@@ -11,7 +11,7 @@ import pickle
 import pyttsx3
 import threading
 import queue
-
+import time
 
 # Initialize TTS Engine
 engine = pyttsx3.init()
@@ -60,11 +60,15 @@ def capture_training_data():
         if gesture_label.lower() == 'q':
             train_model()
             break
-
+        sample_count=0
         while True:
             ret, frame = cap.read()
             if not ret:
                 break
+
+            if(sample_count==200):
+               save_sample(frame, gesture_label)
+            sample_count+=1
 
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             result = hands.process(rgb_frame)
@@ -79,6 +83,20 @@ def capture_training_data():
             cv2.imshow('Capture Training Data', frame)
             if cv2.waitKey(1) & 0xFF == 27:  # Press 'Esc' to stop capturing for this gesture
                 break
+            
+def save_sample(frame, label):
+    sample_dir = 'samples'
+    if not os.path.exists(sample_dir):
+        os.makedirs(sample_dir)
+
+    label_dir = os.path.join(sample_dir, label)
+    if not os.path.exists(label_dir):
+        os.makedirs(label_dir)
+
+    # Save image with label as filename
+    filename = f'{label}_{len(os.listdir(label_dir)) + 1}.jpg'  # Unique filename
+    filepath = os.path.join(label_dir, filename)
+    cv2.imwrite(filepath, frame)
 
 # Function to train the model
 def train_model():
@@ -118,7 +136,7 @@ def recognize_gestures():
         label_encoder = pickle.load(le_file)
     
     prev_gesture_label=None
-    
+
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
