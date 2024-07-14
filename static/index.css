@@ -1,9 +1,14 @@
+*{
+  font-family: "Roboto", sans-serif;
+}
 body{
     margin :0;
 }
 #container{
     background: #2382f9;
     display: flex;
+    
+
 }
 
 #main{
@@ -23,7 +28,7 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    overflow-y: auto;
+    overflow-y:scroll;
     height: 80vh;
     width: 40%;
     margin-top: 4rem;
@@ -33,6 +38,10 @@ body{
     padding: 1rem;
     box-sizing: border-box;
 }
+#samplesContainer::-webkit-scrollbar{
+  width: 5px;
+}
+
 #detect{
     margin-top: 1rem;
 }
@@ -50,6 +59,12 @@ body{
     align-items: center;
     justify-content: center;
     font-size: 24px;
+}
+.icons span:nth-child(1){
+  padding: 10px;
+  background-color: #004e95;
+  width: 106%;
+  border-radius: 10px;
 }
 .icons{
     display: flex;

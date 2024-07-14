@@ -112,8 +112,7 @@ def save_sample(frame, label):
     if not os.path.exists(label_dir):
         os.makedirs(label_dir)
 
-    # Save image with label as filename
-    filename = f'{label}_{len(os.listdir(label_dir)) + 1}.jpg'  # Unique filename
+    filename = f'{label}_{len(os.listdir(label_dir)) + 1}.jpg'  
     filepath = os.path.join(label_dir, filename)
     cv2.imwrite(filepath, frame)
 

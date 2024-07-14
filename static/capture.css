@@ -1,3 +1,6 @@
+*{
+    font-family: "Roboto", sans-serif;
+  }
 body{
     margin :0;
 }
@@ -39,6 +42,12 @@ body{
     margin-top: 170px;
     align-items: center;
 }
+.icons span:nth-child(2){
+    padding: 10px;
+    background-color: #004e95;
+    width: 106%;
+    border-radius: 10px;
+  }
 .logo{
     border-radius: 50%;
     border: 7px solid white;
